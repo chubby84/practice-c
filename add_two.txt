@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <ctype.h>
+#define TEN 10
+
+/* define structure */
+struct ListNode {
+   int val;
+   struct ListNode *next;
+};
+
+/* compute addition of linked list */
+struct ListNode* add_two_numbers(struct ListNode* l1, struct ListNode* l2){
+
+struct ListNode* start = NULL;
+struct ListNode* finish;
+int count=0;
+
+/* create node for storing addition */
+finish = (struct ListNode*) calloc (1,sizeof(struct ListNode));
+finish->val = 0;
+start = l1;
+
+/* update node value with place values of 1st list */
+while(start != NULL){
+   finish->val = finish->val + (start->val * pow(TEN, count));
+   start = start->next;
+   count++;
+}
+count=0;
+start = l2;
+
+/* add place values of 2nd link to updated node value */
+while(start != NULL){
+   finish->val = finish->val + (start->val * pow(TEN, count));
+   start = start->next;
+   count++;
+}
+finish->next = start; /* null single node pointer */
+return finish;
+}
+
+/* free created lists */
+void free_list(struct ListNode* first) {
+struct ListNode* pt;
+while(first != NULL) {
+   pt = first;
+   first = first->next;
+   free(pt);// free node
+}
+return;
+}
+
+/* get integer values from stdin and store in list */
+struct ListNode* get_link_list ( ){
+
+char getVal;
+int num;
+struct ListNode* start = NULL;
+struct ListNode* finish = NULL;
+
+printf("Get value for link list: ");
+scanf(" %c", &getVal);
+
+while (isdigit(getVal)){  /* check character to be digit */
+   num = getVal - '0';
+   start = (struct ListNode*) calloc (1, sizeof(struct ListNode));
+   start->next = finish;
+   finish = start;
+   finish->val = num;
+   printf("Get value for link list: ");
+   scanf(" %c", &getVal);
+}/* end while using any character that isn't a digit */
+return finish;
+}
+
+int main (void) {
+
+struct ListNode* l1;
+struct ListNode* l2;
+struct ListNode* finish;
+
+l1 = get_link_list();
+l2 = get_link_list();
+
+finish = add_two_numbers(l1, l2);
+printf("%d\n", finish->val);
+
+free_list(l1);
+free_list(l2);
+free_list(finish);
+
+return 0;
+}
