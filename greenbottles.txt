@@ -1,0 +1,195 @@
+#include <stdio.h>
+
+/* get numbers 0-9 to start sentence or
+   come after tens digit */
+void get_case_word(int numA, int numB){
+switch(numB){
+   case 9:
+      if(numA > 0)
+         printf(" nine");
+      else
+         printf("Nine");
+      break;
+   case 8:
+      if(numA > 0)
+         printf(" eight");
+      else
+         printf("Eight");
+      break;
+   case 7:
+      if(numA > 0)
+         printf(" seven");
+      else
+         printf("Seven");
+      break;
+   case 6:
+      if(numA > 0)
+         printf(" six");
+      else
+         printf("Six");
+      break;
+   case 5:
+      if(numA > 0)
+         printf(" five");
+      else
+         printf("Five");
+      break;
+   case 4:
+      if(numA > 0)
+         printf(" four");
+      else
+         printf("Four");
+      break;
+   case 3:
+      if(numA > 0)
+         printf(" three");
+      else
+         printf("Three");
+      break;
+   case 2:
+      if(numA > 0)
+         printf(" two");
+      else
+         printf("Two");
+      break;
+   case 1:
+      if(numA > 0)
+         printf(" one");
+      else
+         printf("One");
+      break;
+   default:
+      break;
+}
+return;
+}
+
+/* get digits from 10-19 */
+void get_lower_twenty(int numB){
+switch(numB){
+   case 0:
+      printf("Ten");
+      break;
+   case 1:
+      printf("Eleven");
+      break;
+   case 2:
+      printf("Twelve");
+      break;
+   case 3:
+      printf("Thirteen");
+      break;
+   case 4:
+      printf("Fourteen");
+      break;
+   case 5:
+      printf("Fifteen");
+      break;
+   case 6:
+      printf("Sixteen");
+      break;
+   case 7:
+      printf("Seventeen");
+      break;
+   case 8:
+      printf("Eighteen");
+      break;
+   case 9:
+      printf("Nineteen");
+      break;
+   default:
+      break;
+}
+return;
+}
+
+/* get digits from 20-99 */
+void get_upper_twenty(int numA, int numB){
+switch(numA){
+   case 9:
+      printf("Ninety");
+      get_case_word(numA, numB);
+      break;
+   case 8:
+      printf("Eighty");
+      get_case_word(numA, numB);
+      break;
+   case 7:
+      printf("Seventy");
+      get_case_word(numA, numB);
+      break;
+   case 6:
+      printf("Six");
+      get_case_word(numA, numB);
+      break;
+   case 5:
+      printf("Fifty");
+      get_case_word(numA, numB);
+      break;
+   case 4:
+      printf("Forty");
+      get_case_word(numA, numB);
+      break;
+   case 3:
+      printf("Thirty");
+      get_case_word(numA, numB);
+      break;
+   case 2:
+      printf("Twenty");
+      get_case_word(numA, numB);
+      break;
+   default: 
+      break;
+}
+}
+
+/* print out words corresponding to digit */
+void get_word(int num){
+int numA;
+int numB;
+
+numA = num / 10;
+numB = num % 10;
+
+if(numA==0 && numB==0)
+   printf("Zero");
+else if(numA==0 && numB > 0)
+   get_case_word(numA,numB);
+else if(numA==1)
+   get_lower_twenty(numB);
+else
+   get_upper_twenty(numA, numB);
+return;
+}
+
+int main (){
+int userNum;
+int start;
+printf("Enter bottles of beer between 0 and 99 inclusive: ");
+scanf("%d",&userNum);
+printf("\n");
+start = userNum; // use start for last zero statement.
+
+while(userNum >= 0 && userNum < 100){
+   if(userNum == 0){
+      printf("No more bottles of beer on the wall,\n");
+      printf("no more bottles of beer.\nGo to the ");
+      printf("store and buy some more,\n");
+      get_word(start);
+      printf(" bottles of beer on the wall...\n\n");
+      userNum--;
+   }
+   else{
+      get_word(userNum);
+      printf(" bottles of beer on the wall,\n");
+      get_word(userNum);
+      printf(" bottles of beer,\n");
+      printf("Take one down, pass it around,\n");
+      userNum--;
+      get_word(userNum);
+      printf(" bottles of beer on the wall.\n\n");
+      }
+}
+return 0;
+}
+
