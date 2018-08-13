@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#define STRSZ 20
+
+/* Reverse integer array */
+void reverse_int_array(int* array){
+int i;
+int temp;
+/* swap values */
+for(i=0;i<STRSZ/2;i++){
+   temp = array[i];
+   array[i] = array[STRSZ - 1 - i];
+   array[STRSZ - 1 - i] = temp;
+}
+}
+
+/* Reverse string to integer*/
+void reverse_string(char* string){
+   int i;
+   char temp;
+   /* swap values */
+   for(i=0; i < (strlen(string) / 2); i++){
+      temp = string[i];
+      string[i] = string[(strlen(string)) - 1 - i];
+      string[(strlen(string)) - 1 - i] = temp;
+   }
+}
+
+void convert_string(char* string, int* num){
+int count;
+   /* convert reversed string to integer and store it integer array */
+   for(count=0;count < strlen(string); count++){
+      num[count] = string[count] - '0'; // conversion done using ASCII
+   }
+   while(count < STRSZ){
+      num[count] = 0; // initialize unused elements in array to 0;
+      count++;
+   }
+}
+
+/* get numbers for addition */
+void get_digits(char* string){
+int count=0;
+char ch;
+char oneCh;// variable used to remove unwanted characters
+
+do{
+   printf("Enter digit for addition and stop sequence");
+   printf(" with any charcater\n>>>");
+   scanf(" %c",&ch);//note space before format specifier to read in newline
+   do{
+      scanf("%c",&oneCh);
+   }while(oneCh != '\n');// remove unnecessary characters on same line
+   if(isdigit(ch)){
+      string[count]=ch;
+      count++;
+   }
+}while(count < STRSZ && isdigit(ch));
+
+string[count] = '\0'; // append null character at the end of string
+}
+
+/* summation of two arrays*/
+int add_two(int* numA, int* numB, int* sum){
+int temp;
+int carry=0;
+int i=0;
+
+while(i < STRSZ){
+   temp = numA[i] + numB[i] + carry;
+   if(temp > 9){
+      sum[i]= temp%10;
+      carry = temp/10;// value added to the next iteration
+   }
+   else {
+      sum[i] = temp;
+      carry = 0;
+   }
+   i++;
+}
+if(carry > 0)
+   return 1; // indicates an integer overflow
+else
+   return 0;
+}
+
+/* print array without leading zeros */
+void print_array(int* array){
+int leadZero = 0;//variable used to find the first non-zero integer
+int i;
+for(i=0;i < STRSZ; i++){
+   if(leadZero==0&&array[i]==0)
+      continue;
+   else if(leadZero==0 && array[i] != 0){
+      leadZero=1; // first non-integer found
+      printf("%d",array[i]);
+   }
+   else
+      printf("%d", array[i]);
+}
+printf("\n");
+}
+
+int main (){
+int overFlow;
+char str1[STRSZ+1];
+char str2[STRSZ+1];
+int numArr1[STRSZ];
+int numArr2[STRSZ];
+int sumArr[STRSZ];
+
+/* get string digits for array */
+get_digits(str1);
+printf("\nEnter next digits for summation\n\n");
+get_digits(str2);
+/* reverse string values */
+reverse_string(str1);
+reverse_string(str2);
+/* convert string to integer */
+convert_string(str1, numArr1);
+convert_string(str2, numArr2);
+
+/* do summation */
+overFlow = add_two(numArr1, numArr2, sumArr);
+if(overFlow)
+   printf("***error integer overflow***\n");
+else{
+   reverse_int_array(sumArr); // reverse array elements to proper order
+   print_array(sumArr); // print integer array
+}
+return 0;
+}
+
+
