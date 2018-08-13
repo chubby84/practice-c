@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#define MAX 20
+
+/* return boolean value for leap year */
+bool is_leap_year(int year){
+
+return (year % 400 == 0 || year % 4 == 0 && year % 100 == 0);
+}
+
+/* century return value used in week day calculation */
+int get_century_value(int year){
+int num;
+int numRem;
+char cyear[MAX];
+char cnum[MAX] = "";
+
+sprintf(cyear,"%d",year);// convert year to string
+strncat(cnum, cyear, 2);// copy the first two digit characters
+
+num = atoi(cnum);// convert the two digit string to integer
+numRem = num % 4;
+return (3 - numRem) * 2;
+}
+
+/* year value to be used in calculating week day */
+int get_year_value(int year){
+int num;
+int numDiv;
+char cyear[MAX];
+char cnum[MAX] = "";
+
+sprintf(cyear,"%d",year); // convert year to string
+/* copy digit characters  into respective positions of new string */
+cnum[0] = cyear[strlen(cyear)-2]; 
+cnum[1] = cyear[strlen(cyear)-1];
+
+num = atoi(cnum); //convert two string caharcter into integer
+numDiv = num / 4;
+return num + numDiv;
+}
+
+/* get month value for week day calculation */
+int get_month_value(char month[], int year){
+int numVal;
+if(strcmp(month,"January")==0)
+   numVal = (!is_leap_year(year)) ? 0 : 6; // adjust value if leap year
+else if(strcmp(month,"February")==0)
+   numVal = (!is_leap_year(year)) ? 3 : 2; // adjust value if leap year
+else if(strcmp(month,"March")==0 || strcmp(month,"November")==0)
+   numVal = 3;
+else if(strcmp(month,"April")==0 || strcmp(month,"July")==0)
+   numVal = 6;
+else if(strcmp(month,"September")==0 || strcmp(month,"December")==0)
+   numVal = 5;
+else if(strcmp(month,"May")==0)
+   numVal = 1;
+else if(strcmp(month,"June")==0)
+   numVal = 4;
+else if(strcmp(month,"August")==0)
+   numVal = 2;
+else if(strcmp(month,"October")==0)
+   numVal = 0;
+
+return numVal;
+}
+/* print the day of the week */
+void get_week_day_name(int numDay){
+
+switch(numDay){
+   case 0:
+      printf("The day of the week is Sunday\n");
+      break;
+   case 1:
+      printf("The day of the week is Monday\n");
+      break;
+   case 2:
+      printf("The day of the week is Tuesday\n");
+      break;
+   case 3:
+      printf("The day of the week is Wednesday\n");
+      break;
+   case 4:
+      printf("The day of the week is Thursday\n");
+      break;
+   case 5:
+      printf("The day of the week is Fiday\n");
+      break;
+   case 6:
+      printf("The day of the week is Saturday\n");
+      break;
+   default:
+      break;
+}
+}
+
+int main (void) {
+
+int day;
+int year, weekDay;
+int monthValue, yearValue, centuryValue;
+char month[MAX];
+
+printf("Enter a date eg. 24 July 2018");
+
+printf("\nEnter day: ");
+scanf("%d", &day);
+
+printf("Enter month: ");
+scanf(" %s", month);
+
+printf("Enter year: ");
+scanf("%d", &year);
+
+monthValue = get_month_value(month, year);
+yearValue = get_year_value(year);
+centuryValue = get_century_value(year);
+
+weekDay = (day + monthValue + yearValue + centuryValue) % 7;
+get_week_day_name (weekDay);
+
+return 0;
+}
+
