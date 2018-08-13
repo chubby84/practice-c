@@ -1,0 +1,122 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define SIMULATION 10000
+
+/* re-initialize values to zero */
+int reset_zero(){
+return 0;
+}
+
+/* re-initialize values to one */
+int reset_one(){
+return 1;
+}
+
+/* return integer value as true or false */
+int is_alive(int name){
+   return name;
+}
+
+/* set variable to zero for dead */
+void is_dead(int* name){
+*name = 0;
+return;
+}
+
+/* get random number to confirm hit or missed shot */
+int shoot_puzzler(char letter){
+int num;
+switch(letter){
+   case 'A':
+      num = rand()%3; // 0 for hit, 1 or 2 for miss
+      break;
+   case 'B':
+      num = rand()%2; // 0 for hit, 1 for miss
+      break;
+   case 'C':
+      num = rand()%1; // sets 0 for hit always
+      break;
+   default:
+      break;
+}
+return num;
+}
+
+int main(){
+
+srand((int)time(0));
+char A ='A'; // Aaron
+char B = 'B'; // Bob
+char C = 'C'; // charlie
+
+int aaron, bob, charlie;
+int aaronWins, bobWins, charlieWins;
+int miss;
+double aaronTotal=0, bobTotal = 0, charlieTotal =0;
+int count=0;
+do{
+
+   aaron = reset_one();
+   bob = reset_one();
+   charlie = reset_one();
+   aaronWins = reset_zero();
+   bobWins = reset_zero();
+   charlieWins = reset_zero();
+
+   while((aaron+bob+charlie) > 1){ // game continues if at least two players are alive
+   
+      if(is_alive(aaron)){
+      /* aaron always misses if the other two players 
+         are alive to increase his chance of survival*/
+         if(is_alive(bob) && is_alive(charlie))
+	    miss = reset_one();
+	 else
+	    miss = shoot_puzzler(A);
+         if(!miss){
+            if(is_alive(charlie))
+	       is_dead(&charlie);
+	    else
+	       is_dead(&bob);
+         }	
+      }   
+      if(is_alive(bob)){
+         miss = shoot_puzzler(B);
+         if(!miss){
+            if(is_alive(charlie))
+	       is_dead(&charlie);
+	    else
+	       is_dead(&aaron);
+         }
+      }
+      if(is_alive(charlie)){
+         miss = shoot_puzzler(C);
+         if(!miss){
+            if(is_alive(bob))
+	       is_dead(&bob);
+	    else
+	       is_dead(&aaron);   
+         }
+      }
+      /* get winner if the other two are dead */
+      if(!is_alive(bob) && !is_alive(charlie))
+         aaronWins++;
+      else if(!is_alive(aaron) && !is_alive(charlie))
+         bobWins++;
+      else if(!is_alive(aaron) && !is_alive(bob))
+         charlieWins++;
+   }
+   /* count total number of wins for each player */
+   aaronTotal = aaronTotal + aaronWins;
+   bobTotal = bobTotal + bobWins;
+   charlieTotal = charlieTotal + charlieWins;
+   count++;
+}while(count < SIMULATION);
+
+/* get the probabilities of each player */
+printf("\nprobabilty of Aaron winning is %7.2lf%%\n",(aaronTotal/count)*100);
+printf("probabilty of Bob winning is %9.2lf%%\n",(bobTotal/count)*100);
+printf("probabilty of Charlie winning is %3.2lf%%\n\n",(charlieTotal/count)*100);
+
+return 0;
+}
