@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#define STRSZ 120
+#define STRNM 20
+#define INPUT 3
+
+/* get number of lines in file */
+int get_count(){
+FILE* fpt;
+char temp[STRSZ+STRNM];
+int count=0;
+fpt=fopen("med.txt","r");
+while(fgets(temp,(STRSZ+STRNM),fpt) != NULL){ //returns NULL when EOF is reached
+     count++;
+}
+fclose(fpt);
+return count;
+}
+
+/* convert to lowercase */
+void set_to_lower(char* low){
+int i;
+for(i=0;i < strlen(low); ++i){
+   low[i] = tolower(low[i]);
+}
+}
+
+/* load array with drug name and dosage */
+void fill_array(char array1[][STRNM], char array2[][STRSZ], int size){
+FILE* input;
+char* strpt;
+char line[STRNM+STRSZ];
+int i=0;
+input=fopen("med.txt","r");
+while(fgets(line,(STRNM+STRSZ),input) != NULL && i < size){
+   strpt = strtok(line," ");
+   strcpy(array1[i],strpt); // copy drug name to name array
+   strpt = strtok(NULL, "\n");
+   strcpy(array2[i],strpt); // copy dosage to dose array
+   i++;
+}
+fclose(input);
+}
+/* replace ';' with newline */
+void replace_char(char array[][STRSZ],int size){
+int i;
+int j;
+for(i=0;i < size;++i){
+   for(j=0; j < strlen(array[i]);++j){
+      if(array[i][j] == ';')
+         array[i][j] = '\n';
+   }
+}
+}
+/* print out array if requested */
+void print_array(char* array){
+int j;
+for(j=0; j < strlen(array);++j){
+   if(array[j] == '\n' && array[j+1] == ' '){
+      printf("%c",array[j]);
+      j = j+1; // skip printing space after newline
+   }
+   else
+      printf("%c", array[j]);
+}
+}
+/* get user input to request drug information */
+void request_name(char array1[][STRNM], char array2[][STRSZ], int size){
+char code[INPUT];
+int i;
+int found;
+
+printf("\nEnter only the first %d letters of drug(or q to quit) : ",INPUT);
+scanf("%3s",code);// note: limit on characters entered
+printf("\n");
+set_to_lower(code); // change to lowercase
+while(strcmp(code,"q")!=0){
+   found=0;
+   for(i=0;i < size; i++){
+      if(strncmp(code,array1[i],INPUT)==0){
+         print_array(array1[i]);
+         printf(":\n");
+         print_array(array2[i]);
+         printf("\n");
+         found=1;
+      } 
+   }
+   if(!found)
+      printf("Drug not found\n");
+   printf("Enter only the first %d letters of drug(or q to quit): ",INPUT);
+   scanf("%3s",code); // note: limit on characters entered
+   printf("\n");
+   set_to_lower(code);
+}
+}
+
+int main(){
+int maxsize = get_count();
+char name[maxsize][STRNM];
+char dose[maxsize][STRSZ];
+
+fill_array(name,dose,maxsize);
+replace_char(dose,maxsize);
+request_name(name, dose, maxsize);
+return 0;
+}
